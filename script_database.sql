@@ -1,6 +1,6 @@
 create database automacao;
 
-use database automacao;
+use automacao;
 
 create table pedido_peso (
   id int(9) auto_increment primary key,
