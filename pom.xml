@@ -38,4 +38,8 @@
 	   </dependency>
 	   -->
 	</dependencies>
+	
+	<build>
+		<finalName>automacao-balanca</finalName>
+	</build>
 </project>

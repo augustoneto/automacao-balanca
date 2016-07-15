@@ -11,3 +11,16 @@ create table pedido_peso (
   operador varchar(50),
   data_gravacao datetime
 );
+
+
+-- HSQLDB
+
+create table pedido_peso (
+  id integer identity primary key,
+  num_pedido integer,
+  num_nf integer,
+  peso decimal(5, 2),
+  unidade varchar(2),
+  operador varchar(50),
+  data_gravacao datetime
+);

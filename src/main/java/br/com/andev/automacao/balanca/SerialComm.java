@@ -13,6 +13,8 @@ public class SerialComm {
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	
+	private SerialPort serialPort;
+	
 	public void connect(String portName) throws Exception {
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
         if (portIdentifier.isCurrentlyOwned()){
@@ -22,7 +24,7 @@ public class SerialComm {
             CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
             
             if (commPort instanceof SerialPort) {
-                SerialPort serialPort = (SerialPort) commPort;
+                serialPort = (SerialPort) commPort;
                 serialPort.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
                 this.inputStream = serialPort.getInputStream();
@@ -34,6 +36,10 @@ public class SerialComm {
             }
         }     
     }
+	
+	public void disconnect() {
+		serialPort.close();
+	}
 	
 	public InputStream getInputStream() {
 		return inputStream;

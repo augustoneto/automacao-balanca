@@ -19,12 +19,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import br.com.andev.automacao.balanca.SerialComm;
+import br.com.andev.automacao.balanca.ThreadCounter;
 import br.com.andev.automacao.balanca.dao.PedidoPesoDao;
 import br.com.andev.automacao.balanca.dao.PedidoPesoDaoJpa;
 import br.com.andev.automacao.balanca.dao.PersistenceManager;
 import br.com.andev.automacao.balanca.model.PedidoPeso;
 
-public class AutomacaoBalancaUI implements Runnable {
+public class AutomacaoBalancaUI /*implements Runnable*/ {
 
 	private JFrame janela;
 
@@ -34,12 +35,16 @@ public class AutomacaoBalancaUI implements Runnable {
 	private JTextField jtfNumPedido, jtfNumNotaFiscal, jtfOperador;
 	private JTextField jtfPeso;
 	
-	private JButton botaoGravar, botaoSair;
+	private JButton botaoGravar, botaoSair, botaoConectar;
 	
 	private PedidoPesoDao pedidoPesoDao;
 	
 	private InputStream in;
 	private String dadoLido = new String();
+	
+	private CustomThread customThread;
+	
+	private boolean portaConectada;
 	
 	public String getDadoLido() {
 		return dadoLido;
@@ -50,24 +55,41 @@ public class AutomacaoBalancaUI implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		try {
-			
-			SerialComm serialComm = new SerialComm();
-			serialComm.connect("/dev/ttyUSB02");
-			
-			(new Thread(new AutomacaoBalancaUI(serialComm.getInputStream()))).start();
-			
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			SerialComm serialComm = new SerialComm();
+////			serialComm.connect("/dev/ttyUSB02");
+//			serialComm.connect("COM3");
+//			
+//			(new Thread(new AutomacaoBalancaUI(serialComm.getInputStream()))).start();
+//			
+//			
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		 EventQueue.invokeLater(new Runnable()
+	        {
+	            public void run()
+	            {
+	                new AutomacaoBalancaUI().montaTela();
+	            }
+	        });
 		
 	}
+	
+	public AutomacaoBalancaUI() {}
 	
 	public AutomacaoBalancaUI(InputStream in) {
 		this.in = in;
 		montaTela();
+		
+		Component[] components = painelPrincipal.getComponents();
+		
+		for (Component component : components) {
+			System.out.println(component.getName());
+		}
 	}
 
 	public void montaTela() {
@@ -75,11 +97,12 @@ public class AutomacaoBalancaUI implements Runnable {
 		preparaPainelPrincipal();
 		preparaCampos();
 		preparaBotaoGravar();
+		preparaBotaoConectar();
 		mostraJanela();
 	}
 
 	private void preparaJanela() {
-		janela = new JFrame("AutomaÃ§Ã£o BalanÃ§a");
+		janela = new JFrame("Automação Balança");
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -118,6 +141,7 @@ public class AutomacaoBalancaUI implements Runnable {
 		adiciona(jlPeso, 10, 91, 130, 25);
 
 		jtfPeso = new JTextField("9999999", 20);
+		jtfPeso.setName("peso");
 		adiciona(jtfPeso, 130, 91, 300, 25);
 	}
 
@@ -150,6 +174,49 @@ public class AutomacaoBalancaUI implements Runnable {
 
 		adiciona(botaoGravar, 130, 121, 100, 25);
 	}
+	
+	private void preparaBotaoConectar() {
+		botaoConectar = new JButton("Conectar");
+		botaoConectar.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					SerialComm serialComm = new SerialComm();
+					
+					if (!portaConectada) {
+						
+//						serialComm.connect("/dev/ttyUSB02");
+						serialComm.connect("COM1");
+						
+						customThread = new CustomThread(jtfPeso, serialComm.getInputStream());
+						customThread.start();
+						
+						portaConectada = true;
+						
+						botaoConectar.setText("Desconectar");
+					} else {
+						
+						//serialComm.getInputStream().close();
+//						serialComm.disconnect();
+//						
+//						portaConectada = false;
+//						
+//						botaoConectar.setText("Conectar");
+					}
+					
+					
+					
+				} catch (Exception e1) {
+					
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
+		adiciona(botaoConectar, 130, 160, 100, 25);
+	}
 
 	private void preparaBotaoSair() {
 		botaoSair = new JButton("Sair");
@@ -168,33 +235,74 @@ public class AutomacaoBalancaUI implements Runnable {
 		component.setBounds(nColuna, nLinha, nLargura, nAltura);
 	}
 	
+//	public void run() {
+//        byte[] buffer = new byte[1024];
+//        int len = -1;
+//        try {
+//            while ((len = this.in.read(buffer)) > -1 ) {
+//                //System.out.print(new String(buffer,0,len));
+//                setDadoLido(new String(buffer,0,len));
+//                System.out.print(getDadoLido());
+//                atualizaPeso(getDadoLido());
+//                
+//            }
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }  
+//        
+//    }
+//	
+//	public void atualizaPeso(final String peso) {
+//		Runnable atualizaPeso = new Runnable() {
+//		     public void run() {
+//		    	 System.out.println("Atualizando Peso: " + peso);
+//		    	 jtfPeso.setText(peso);
+//		     }
+//		 };
+//
+//		 SwingUtilities.invokeLater(atualizaPeso);
+//	}
+
+}
+
+class CustomThread extends Thread {
+	
+	private JTextField tField;
+	
+	private InputStream in;
+	
+	private String dataRead;
+	
+	public CustomThread(JTextField tField, InputStream in) {
+		this.tField = tField;
+		this.in = in;
+	}
+	
+	@Override
 	public void run() {
-        byte[] buffer = new byte[1024];
+		
+		byte[] buffer = new byte[1024];
         int len = -1;
         try {
             while ((len = this.in.read(buffer)) > -1 ) {
-                //System.out.print(new String(buffer,0,len));
-                setDadoLido(new String(buffer,0,len));
-                System.out.print(getDadoLido());
-                atualizaPeso(getDadoLido());
-        
+            	this.dataRead = new String(buffer,0,len);
+                System.out.print(new String(buffer,0,len));
+                
+                EventQueue.invokeLater(new Runnable()
+                {
+                    public void run()
+                    {
+                        tField.setText(dataRead);
+                    }
+                });
+                
             }
         }
         catch (IOException e) {
             e.printStackTrace();
         }  
-        
-    }
-	
-	public void atualizaPeso(final String peso) {
-		Runnable atualizaPeso = new Runnable() {
-		     public void run() {
-		    	 System.out.println("Atualizando Peso: " + peso);
-		    	 jtfPeso.setText(peso);
-		     }
-		 };
-
-		 SwingUtilities.invokeLater(atualizaPeso);
+		
 	}
-
+	
 }
