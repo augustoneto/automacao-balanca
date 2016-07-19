@@ -19,7 +19,7 @@ create table pedido_peso (
   id integer identity primary key,
   num_pedido integer,
   num_nf integer,
-  peso decimal(5, 2),
+  peso varchar(10),
   unidade varchar(2),
   operador varchar(50),
   data_gravacao datetime

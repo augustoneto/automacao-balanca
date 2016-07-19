@@ -1,4 +1,8 @@
 package br.com.andev.automacao.balanca;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import gnu.io.CommPortIdentifier;
 
 
@@ -9,13 +13,24 @@ public class ReadPort {
 
 	}
 	
-	public void listPorts() {
+	public List<String> listPorts() {
         java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+        
+        List<String> ports = new ArrayList<String>();
+        
+        String port = null;
         
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier portIdentifier = portEnum.nextElement();
-            System.out.println(portIdentifier.getName()  +  " - " +  getPortTypeName(portIdentifier.getPortType()));
+            
+            port = new String(portIdentifier.getName()  +  " - " +  getPortTypeName(portIdentifier.getPortType()));
+            
+            ports.add(port);
+            
+            System.out.println(port);
         }        
+        
+        return ports;
     }
     
     public String getPortTypeName(int portType) {
