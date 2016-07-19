@@ -26,7 +26,7 @@ public class PedidoPeso {
 	private Long numPedido;
 	
 	@Column(name="peso")
-	private Double peso;
+	private String peso;
 	
 	@Column(name="unidade")
 	private String unidade;
@@ -62,11 +62,11 @@ public class PedidoPeso {
 		this.numPedido = numPedido;
 	}
 
-	public Double getPeso() {
+	public String getPeso() {
 		return peso;
 	}
 
-	public void setPeso(Double peso) {
+	public void setPeso(String peso) {
 		this.peso = peso;
 	}
 

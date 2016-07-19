@@ -1,2 +1,2 @@
- mvn install:install-file -Dfile=comm-2.0.jar -DgroupId=javax.comm 
- -DartifactId=comm -Dversion=2.0 -Dpackaging=jar
+ mvn install:install-file -Dfile=RXTXcomm.jar -DgroupId=RXTXcomm 
+ -DartifactId=RXTXcomm -Dversion=2.1 -Dpackaging=jar

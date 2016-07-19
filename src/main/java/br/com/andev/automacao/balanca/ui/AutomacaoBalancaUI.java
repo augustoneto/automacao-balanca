@@ -12,20 +12,17 @@ import javax.persistence.EntityManager;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import br.com.andev.automacao.balanca.SerialComm;
-import br.com.andev.automacao.balanca.ThreadCounter;
 import br.com.andev.automacao.balanca.dao.PedidoPesoDao;
 import br.com.andev.automacao.balanca.dao.PedidoPesoDaoJpa;
 import br.com.andev.automacao.balanca.dao.PersistenceManager;
 import br.com.andev.automacao.balanca.model.PedidoPeso;
 
-public class AutomacaoBalancaUI /*implements Runnable*/ {
+public class AutomacaoBalancaUI {
 
 	private JFrame janela;
 
@@ -39,57 +36,25 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 	
 	private PedidoPesoDao pedidoPesoDao;
 	
-	private InputStream in;
-	private String dadoLido = new String();
-	
 	private CustomThread customThread;
 	
 	private boolean portaConectada;
-	
-	public String getDadoLido() {
-		return dadoLido;
-	}
-	
-	public void setDadoLido(String dadoLido) {
-		this.dadoLido = dadoLido;
-	}
 
 	public static void main(String[] args) {
-//		try {
-//			
-//			SerialComm serialComm = new SerialComm();
-////			serialComm.connect("/dev/ttyUSB02");
-//			serialComm.connect("COM3");
-//			
-//			(new Thread(new AutomacaoBalancaUI(serialComm.getInputStream()))).start();
-//			
-//			
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 		
-		 EventQueue.invokeLater(new Runnable()
-	        {
-	            public void run()
-	            {
-	                new AutomacaoBalancaUI().montaTela();
-	            }
-	        });
+		 EventQueue.invokeLater(new Runnable() {
+			 public void run() {
+	        	try {
+	        		AutomacaoBalancaUI automacaoBalancaUI = new AutomacaoBalancaUI();
+	        		automacaoBalancaUI.montaTela();
+	        		automacaoBalancaUI.conectaPortaSerial();
+	        		
+	        	} catch (Exception e) {
+	        		
+	        	}
+	         }
+		 });
 		
-	}
-	
-	public AutomacaoBalancaUI() {}
-	
-	public AutomacaoBalancaUI(InputStream in) {
-		this.in = in;
-		montaTela();
-		
-		Component[] components = painelPrincipal.getComponents();
-		
-		for (Component component : components) {
-			System.out.println(component.getName());
-		}
 	}
 
 	public void montaTela() {
@@ -97,12 +62,19 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 		preparaPainelPrincipal();
 		preparaCampos();
 		preparaBotaoGravar();
-		preparaBotaoConectar();
+//		preparaBotaoConectar();
 		mostraJanela();
+	}
+	
+	private void limpaCampos() {
+		jtfNumPedido.setText(null);
+		jtfNumNotaFiscal.setText(null);
+		jtfOperador.setText(null);
+		jtfPeso.setText(null);
 	}
 
 	private void preparaJanela() {
-		janela = new JFrame("Automação Balança");
+		janela = new JFrame("AutomaÃ§Ã£o BalanÃ§a");
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -140,7 +112,7 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 		jlPeso = new JLabel("Peso");
 		adiciona(jlPeso, 10, 91, 130, 25);
 
-		jtfPeso = new JTextField("9999999", 20);
+		jtfPeso = new JTextField(20);
 		jtfPeso.setName("peso");
 		adiciona(jtfPeso, 130, 91, 300, 25);
 	}
@@ -153,9 +125,9 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 				PedidoPeso pedidoPeso = new PedidoPeso();
 				pedidoPeso.setNumPedido(Long.parseLong(jtfNumPedido.getText()));
 				pedidoPeso.setNumNotaFiscal(Long.parseLong(jtfNumNotaFiscal.getText()));
-				pedidoPeso.setPeso(Double.parseDouble(jtfPeso.getText()));
+				pedidoPeso.setPeso(jtfPeso.getText().trim());
 				pedidoPeso.setUnidade("KG");
-				pedidoPeso.setOperador(jtfOperador.getText());
+				pedidoPeso.setOperador(jtfOperador.getText().trim());
 				pedidoPeso.setDataRegistro(new Date());
 				
 				EntityManager em = PersistenceManager.INSTANCE.getEntityManager();
@@ -166,13 +138,24 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 				pedidoPesoDao.salvar(pedidoPeso);
 				em.getTransaction().commit();
 				em.close();
-				PersistenceManager.INSTANCE.close();
+				//PersistenceManager.INSTANCE.close();
+				
+				limpaCampos();
+				JOptionPane.showMessageDialog(janela, "InformaÃ§Ãµes gravadas com sucesso!");
 				System.out.println("Gravando...");
 
 			}
 		});
 
 		adiciona(botaoGravar, 130, 121, 100, 25);
+	}
+	
+	private void conectaPortaSerial() throws Exception {
+		SerialComm serialComm = new SerialComm();
+		serialComm.connect("/dev/ttyUSB02");
+//		serialComm.connect("COM1");
+		customThread = new CustomThread(jtfPeso, serialComm.getInputStream());
+		customThread.start();
 	}
 	
 	private void preparaBotaoConectar() {
@@ -186,8 +169,8 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 					
 					if (!portaConectada) {
 						
-//						serialComm.connect("/dev/ttyUSB02");
-						serialComm.connect("COM1");
+						serialComm.connect("/dev/ttyUSB02");
+//						serialComm.connect("COM1");
 						
 						customThread = new CustomThread(jtfPeso, serialComm.getInputStream());
 						customThread.start();
@@ -215,7 +198,7 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 			}
 		});
 		
-		adiciona(botaoConectar, 130, 160, 100, 25);
+//		adiciona(botaoConectar, 130, 160, 100, 25);
 	}
 
 	private void preparaBotaoSair() {
@@ -234,35 +217,6 @@ public class AutomacaoBalancaUI /*implements Runnable*/ {
 		painelPrincipal.add(component);
 		component.setBounds(nColuna, nLinha, nLargura, nAltura);
 	}
-	
-//	public void run() {
-//        byte[] buffer = new byte[1024];
-//        int len = -1;
-//        try {
-//            while ((len = this.in.read(buffer)) > -1 ) {
-//                //System.out.print(new String(buffer,0,len));
-//                setDadoLido(new String(buffer,0,len));
-//                System.out.print(getDadoLido());
-//                atualizaPeso(getDadoLido());
-//                
-//            }
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }  
-//        
-//    }
-//	
-//	public void atualizaPeso(final String peso) {
-//		Runnable atualizaPeso = new Runnable() {
-//		     public void run() {
-//		    	 System.out.println("Atualizando Peso: " + peso);
-//		    	 jtfPeso.setText(peso);
-//		     }
-//		 };
-//
-//		 SwingUtilities.invokeLater(atualizaPeso);
-//	}
 
 }
 
@@ -272,7 +226,7 @@ class CustomThread extends Thread {
 	
 	private InputStream in;
 	
-	private String dataRead;
+	private String dataRead = new String();
 	
 	public CustomThread(JTextField tField, InputStream in) {
 		this.tField = tField;
@@ -285,21 +239,24 @@ class CustomThread extends Thread {
 		byte[] buffer = new byte[1024];
         int len = -1;
         try {
+        	
             while ((len = this.in.read(buffer)) > -1 ) {
-            	this.dataRead = new String(buffer,0,len);
-                System.out.print(new String(buffer,0,len));
-                
-                EventQueue.invokeLater(new Runnable()
-                {
-                    public void run()
-                    {
-                        tField.setText(dataRead);
+            	if (in.available() > 0) {
+            		dataRead = "";
+            	}
+            	
+            	dataRead += new String(buffer,0,len);
+            	
+            	EventQueue.invokeLater(new Runnable() {
+            		
+            		public void run() {
+                        tField.setText(dataRead.trim());
                     }
                 });
                 
             }
-        }
-        catch (IOException e) {
+            
+        } catch (IOException e) {
             e.printStackTrace();
         }  
 		
