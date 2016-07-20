@@ -1,2 +1,4 @@
  mvn install:install-file -Dfile=RXTXcomm.jar -DgroupId=RXTXcomm 
  -DartifactId=RXTXcomm -Dversion=2.2 -Dpackaging=jar
+
+ start javaw -jar JarFile.jar

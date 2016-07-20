@@ -20,7 +20,7 @@
 			<!-- dados da conexao HSQLDB-->
 			 
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:/Users/006397L2/automacao;shutdown=true" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:C:/balanca-automacao/db;shutdown=true" />
 			<property name="javax.persistence.jdbc.user" value="SA" />
 			<property name="javax.persistence.jdbc.password" value="" />
 			

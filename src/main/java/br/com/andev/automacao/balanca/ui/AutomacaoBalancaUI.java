@@ -2,6 +2,7 @@ package br.com.andev.automacao.balanca.ui;
 
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -79,13 +80,13 @@ public class AutomacaoBalancaUI {
 	}
 
 	private void preparaJanela() {
-		janela = new JFrame("Automação Balança");
+		janela = new JFrame("Balança-Automação");
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public void mostraJanela() {
 		janela.pack();
-		janela.setSize(540,540);
+		janela.setSize(640,640);
 		janela.setVisible(true);
 	}
 
@@ -96,33 +97,42 @@ public class AutomacaoBalancaUI {
 	}
 	
 	private void preparaCampos() {
-		jlNumPedido = new JLabel("Número do Pedido:");
-		adiciona(jlNumPedido, 50, 100, 130, 25);
+		jlNumPedido = new JLabel("Pedido:");
+		jlNumPedido.setFont(jlNumPedido.getFont().deriveFont(25f));
+		adiciona(jlNumPedido, 50, 100, 150, 35);
 		
 		jtfNumPedido = new JTextField(20);
-		adiciona(jtfNumPedido, 200, 100, 300, 25);
+		jtfNumPedido.setFont(jtfNumPedido.getFont().deriveFont(Font.PLAIN, 25f));
+		adiciona(jtfNumPedido, 300, 100, 400, 35);
 		
-		jlNumNotaFiscal = new JLabel("Número da Nota Fiscal:");
-		adiciona(jlNumNotaFiscal, 50, 140, 130, 25);
+		jlNumNotaFiscal = new JLabel("Nota Fiscal:");
+		jlNumNotaFiscal.setFont(jlNumNotaFiscal.getFont().deriveFont(25f));
+		adiciona(jlNumNotaFiscal, 50, 140, 150, 35);
 
 		jtfNumNotaFiscal = new JTextField(20);
-		adiciona(jtfNumNotaFiscal, 200, 140, 300, 25);
+		jtfNumNotaFiscal.setFont(jtfNumNotaFiscal.getFont().deriveFont(Font.PLAIN, 25f));
+		adiciona(jtfNumNotaFiscal, 300, 140, 400, 35);
 		
 		jlOperador = new JLabel("Operador:");
-		adiciona(jlOperador, 50, 180, 130, 25);
+		jlOperador.setFont(jlOperador.getFont().deriveFont(25f));
+		adiciona(jlOperador, 50, 180, 150, 35);
 
 		jtfOperador = new JTextField(20);
-		adiciona(jtfOperador, 200, 180, 300, 25);
+		jtfOperador.setFont(jtfOperador.getFont().deriveFont(Font.PLAIN, 25f));
+		adiciona(jtfOperador, 300, 180, 400, 35);
 		
 		jlPeso = new JLabel("Peso:");
-		adiciona(jlPeso, 50, 220, 130, 25);
+		jlPeso.setFont(jlPeso.getFont().deriveFont(25f));
+		adiciona(jlPeso, 50, 220, 150, 35);
 
 		jtfPeso = new JTextField(20);
-		adiciona(jtfPeso, 200, 220, 300, 25);
+		jtfPeso.setFont(jtfPeso.getFont().deriveFont(Font.PLAIN, 25f));
+		adiciona(jtfPeso, 300, 220, 400, 35);
 	}
 
 	private void preparaBotaoGravar() {
 		botaoGravar = new JButton("Gravar");
+		botaoGravar.setFont(botaoGravar.getFont().deriveFont(25f));
 		botaoGravar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				try {
@@ -154,7 +164,7 @@ public class AutomacaoBalancaUI {
 			}
 		});
 
-		adiciona(botaoGravar, 200, 260, 100, 25);
+		adiciona(botaoGravar, 300, 300, 200, 35);
 	}
 	
 	private void conectaPortaSerial() throws Exception {
@@ -167,6 +177,7 @@ public class AutomacaoBalancaUI {
 	
 	private void preparaBotaoPorta() {
 		botaoPorta = new JButton("Porta Serial");
+		botaoPorta.setFont(botaoPorta.getFont().deriveFont(25f));
 		botaoPorta.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent event) {
@@ -192,7 +203,7 @@ public class AutomacaoBalancaUI {
 			}
 		});
 		
-		adiciona(botaoPorta, 2, 2, 150, 25);
+		adiciona(botaoPorta, 2, 2, 200, 35);
 	}
 	
 	private void preparaBotaoConectar() {

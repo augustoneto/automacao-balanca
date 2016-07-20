@@ -7,11 +7,6 @@ import gnu.io.CommPortIdentifier;
 
 
 public class ReadPort {
-
-	public static void main(String[] args) {
-		new ReadPort().listPorts();
-
-	}
 	
 	public List<String> listPorts() {
         java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
