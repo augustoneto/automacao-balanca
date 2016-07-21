@@ -63,7 +63,7 @@ public class AutomacaoBalancaUI {
 	        	}
 	        	catch (NoSuchPortException noSuchPortException) {
 	        		noSuchPortException.printStackTrace();
-	        		automacaoBalancaUI.showMessage("Porta serial configurada nÃ£o reconhecida");
+	        		automacaoBalancaUI.showMessage("Porta serial configurada não reconhecida");
 	        	}
 	        	catch (Exception e) {
 	        		e.printStackTrace();
@@ -105,7 +105,7 @@ public class AutomacaoBalancaUI {
 	}
 
 	private void preparaJanela() {
-		janela = new JFrame("BalanÃ§a-AutomaÃ§Ã£o-v1.0.0");
+		janela = new JFrame("Balança-Automação-v1.0.0");
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -172,7 +172,7 @@ public class AutomacaoBalancaUI {
 					//PersistenceManager.INSTANCE.close();
 					
 					limpaCampos();
-					showMessage("InformaÃ§Ãµes gravadas com sucesso!");
+					showMessage("Informações gravadas com sucesso!");
 					System.out.println("Gravando...");
 				} catch (Exception e) {
 					e.printStackTrace();
