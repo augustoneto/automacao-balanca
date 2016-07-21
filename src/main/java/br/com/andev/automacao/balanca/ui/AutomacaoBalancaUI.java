@@ -1,5 +1,7 @@
 package br.com.andev.automacao.balanca.ui;
 
+import gnu.io.NoSuchPortException;
+
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -8,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import br.com.andev.automacao.balanca.ReadPort;
 import br.com.andev.automacao.balanca.SerialComm;
@@ -44,6 +49,8 @@ public class AutomacaoBalancaUI {
 	private boolean portaConectada;
 
 	public static void main(String[] args) {
+		
+		setUIFont(new FontUIResource(new Font("Arial", 0, 20)));
 		 
 		 EventQueue.invokeLater(new Runnable() {
 			 public void run() {
@@ -53,14 +60,32 @@ public class AutomacaoBalancaUI {
 	        		automacaoBalancaUI.montaTela();
 	        		automacaoBalancaUI.conectaPortaSerial();
 	        		
-	        	} catch (Exception e) {
+	        	}
+	        	catch (NoSuchPortException noSuchPortException) {
+	        		noSuchPortException.printStackTrace();
+	        		automacaoBalancaUI.showMessage("Porta serial configurada nÃ£o reconhecida");
+	        	}
+	        	catch (Exception e) {
 	        		e.printStackTrace();
-	        		automacaoBalancaUI.showStackTrace(e);
+	        		automacaoBalancaUI.showMessage(e.getMessage());
 	        	}
 	         }
 		 });
 		
 	}
+	
+	public static void setUIFont(FontUIResource f) {
+        Enumeration<Object> keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof FontUIResource) {
+                FontUIResource orig = (FontUIResource) value;
+                Font font = new Font(f.getFontName(), orig.getStyle(), f.getSize());
+                UIManager.put(key, new FontUIResource(font));
+            }
+        }
+    }
 
 	public void montaTela() {
 		preparaJanela();
@@ -80,7 +105,7 @@ public class AutomacaoBalancaUI {
 	}
 
 	private void preparaJanela() {
-		janela = new JFrame("Balança-Automação");
+		janela = new JFrame("BalanÃ§a-AutomaÃ§Ã£o-v1.0.0");
 		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -98,36 +123,28 @@ public class AutomacaoBalancaUI {
 	
 	private void preparaCampos() {
 		jlNumPedido = new JLabel("Pedido:");
-		jlNumPedido.setFont(jlNumPedido.getFont().deriveFont(25f));
 		adiciona(jlNumPedido, 50, 100, 150, 35);
 		
 		jtfNumPedido = new JTextField(20);
-		jtfNumPedido.setFont(jtfNumPedido.getFont().deriveFont(Font.PLAIN, 25f));
-		adiciona(jtfNumPedido, 300, 100, 400, 35);
+		adiciona(jtfNumPedido, 300, 100, 500, 35);
 		
 		jlNumNotaFiscal = new JLabel("Nota Fiscal:");
-		jlNumNotaFiscal.setFont(jlNumNotaFiscal.getFont().deriveFont(25f));
 		adiciona(jlNumNotaFiscal, 50, 140, 150, 35);
 
 		jtfNumNotaFiscal = new JTextField(20);
-		jtfNumNotaFiscal.setFont(jtfNumNotaFiscal.getFont().deriveFont(Font.PLAIN, 25f));
-		adiciona(jtfNumNotaFiscal, 300, 140, 400, 35);
+		adiciona(jtfNumNotaFiscal, 300, 140, 500, 35);
 		
 		jlOperador = new JLabel("Operador:");
-		jlOperador.setFont(jlOperador.getFont().deriveFont(25f));
 		adiciona(jlOperador, 50, 180, 150, 35);
 
 		jtfOperador = new JTextField(20);
-		jtfOperador.setFont(jtfOperador.getFont().deriveFont(Font.PLAIN, 25f));
-		adiciona(jtfOperador, 300, 180, 400, 35);
+		adiciona(jtfOperador, 300, 180, 500, 35);
 		
 		jlPeso = new JLabel("Peso:");
-		jlPeso.setFont(jlPeso.getFont().deriveFont(25f));
 		adiciona(jlPeso, 50, 220, 150, 35);
 
 		jtfPeso = new JTextField(20);
-		jtfPeso.setFont(jtfPeso.getFont().deriveFont(Font.PLAIN, 25f));
-		adiciona(jtfPeso, 300, 220, 400, 35);
+		adiciona(jtfPeso, 300, 220, 500, 35);
 	}
 
 	private void preparaBotaoGravar() {
@@ -155,11 +172,11 @@ public class AutomacaoBalancaUI {
 					//PersistenceManager.INSTANCE.close();
 					
 					limpaCampos();
-					JOptionPane.showMessageDialog(janela, "Informações gravadas com sucesso!");
+					showMessage("InformaÃ§Ãµes gravadas com sucesso!");
 					System.out.println("Gravando...");
 				} catch (Exception e) {
 					e.printStackTrace();
-					showStackTrace(e);
+					showMessage(e.getMessage());
 				}
 			}
 		});
@@ -198,12 +215,12 @@ public class AutomacaoBalancaUI {
 					showMessage(msgPorts);
 				} catch (Exception e) {
 					e.printStackTrace();
-					showStackTrace(e);
+					showMessage(e.getMessage());
 				}
 			}
 		});
 		
-		adiciona(botaoPorta, 2, 2, 200, 35);
+		adiciona(botaoPorta, 2, 2, 300, 35);
 	}
 	
 	private void preparaBotaoConectar() {
