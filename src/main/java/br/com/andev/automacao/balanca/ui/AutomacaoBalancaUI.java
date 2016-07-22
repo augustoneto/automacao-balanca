@@ -36,8 +36,8 @@ public class AutomacaoBalancaUI {
 
 	private JPanel painelPrincipal;
 	
-	private JLabel jlNumPedido, jlNumNotaFiscal, jlOperador, jlPeso;
-	private JTextField jtfNumPedido, jtfNumNotaFiscal, jtfOperador;
+	private JLabel jlNumPedido, jlCodProduto, jlOperador, jlPeso;
+	private JTextField jtfNumPedido, jtfCodProduto, jtfOperador;
 	private JTextField jtfPeso;
 	
 	private JButton botaoGravar, botaoSair, botaoConectar, botaoPorta;
@@ -99,7 +99,7 @@ public class AutomacaoBalancaUI {
 	
 	private void limpaCampos() {
 		jtfNumPedido.setText(null);
-		jtfNumNotaFiscal.setText(null);
+		jtfCodProduto.setText(null);
 		jtfOperador.setText(null);
 		jtfPeso.setText(null);
 	}
@@ -111,7 +111,7 @@ public class AutomacaoBalancaUI {
 
 	public void mostraJanela() {
 		janela.pack();
-		janela.setSize(640,640);
+		janela.setSize(960,640);
 		janela.setVisible(true);
 	}
 
@@ -128,11 +128,11 @@ public class AutomacaoBalancaUI {
 		jtfNumPedido = new JTextField(20);
 		adiciona(jtfNumPedido, 300, 100, 500, 35);
 		
-		jlNumNotaFiscal = new JLabel("Nota Fiscal:");
-		adiciona(jlNumNotaFiscal, 50, 140, 150, 35);
+		jlCodProduto = new JLabel("Produto:");
+		adiciona(jlCodProduto, 50, 140, 150, 35);
 
-		jtfNumNotaFiscal = new JTextField(20);
-		adiciona(jtfNumNotaFiscal, 300, 140, 500, 35);
+		jtfCodProduto = new JTextField(20);
+		adiciona(jtfCodProduto, 300, 140, 500, 35);
 		
 		jlOperador = new JLabel("Operador:");
 		adiciona(jlOperador, 50, 180, 150, 35);
@@ -155,7 +155,7 @@ public class AutomacaoBalancaUI {
 				try {
 					PedidoPeso pedidoPeso = new PedidoPeso();
 					pedidoPeso.setNumPedido(Long.parseLong(jtfNumPedido.getText()));
-					pedidoPeso.setNumNotaFiscal(Long.parseLong(jtfNumNotaFiscal.getText()));
+					pedidoPeso.setCodProduto(Long.parseLong(jtfCodProduto.getText()));
 					pedidoPeso.setPeso(jtfPeso.getText().trim());
 					pedidoPeso.setUnidade("KG");
 					pedidoPeso.setOperador(jtfOperador.getText().trim());

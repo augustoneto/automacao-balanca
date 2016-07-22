@@ -19,11 +19,11 @@ public class PedidoPeso {
 	@Column(name="id")
 	private Long id;
 	
-	@Column(name="num_nf")
-	private Long numNotaFiscal;
-	
-	@Column(name="num_pedido")
+	@Column(name="cod_pedido")
 	private Long numPedido;
+	
+	@Column(name="cod_produto")
+	private Long codProduto;
 	
 	@Column(name="peso")
 	private String peso;
@@ -46,20 +46,20 @@ public class PedidoPeso {
 		this.id = id;
 	}
 
-	public Long getNumNotaFiscal() {
-		return numNotaFiscal;
-	}
-
-	public void setNumNotaFiscal(Long numNotaFiscal) {
-		this.numNotaFiscal = numNotaFiscal;
-	}
-
 	public Long getNumPedido() {
 		return numPedido;
 	}
 
 	public void setNumPedido(Long numPedido) {
 		this.numPedido = numPedido;
+	}
+	
+	public Long getCodProduto() {
+		return codProduto;
+	}
+	
+	public void setCodProduto(Long codProduto) {
+		this.codProduto = codProduto;
 	}
 
 	public String getPeso() {
@@ -92,6 +92,31 @@ public class PedidoPeso {
 
 	public void setDataRegistro(Date dataRegistro) {
 		this.dataRegistro = dataRegistro;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PedidoPeso other = (PedidoPeso) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }
